@@ -1,6 +1,5 @@
 require('dotenv').config()
 const express = require('express')
-const cors = require('cors')
 const Note = require('./models/note')
 
 const app = express()
@@ -13,7 +12,6 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
-app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(requestLogger)
@@ -124,4 +122,4 @@ const PORT = process.env.PORT
 
 app.listen(PORT)
 
-console.log(`Server running on Port http://127.0.0.1:${PORT}`)
+console.log(`Server running on Port http://localhost:${PORT}`)
