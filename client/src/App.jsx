@@ -136,12 +136,6 @@ const App = () => {
             toggleImportant={()=>toggleImportant(note.id)}/> 
         )}
       </ul>
-      <div>
-        <form onSubmit={handleSubmit}>
-          <input value={newNotes} onChange={handleNoteChange} />
-          <button type="submit">Save</button>
-        </form>
-      </div>
       <Footer />
     </div>
   )
