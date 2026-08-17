@@ -4,7 +4,25 @@ import Note from './component/Notes.jsx'
 import { useState, useEffect } from 'react'
 import Notification from './component/Notification.jsx'
 import Footer from './component/Footer.jsx'
-import LoginForm from './component/Login.jsx' // Added missing import
+import LoginForm from './component/Login.jsx'
+import Togglable from './component/Togglable.jsx' // Added Togglable import
+
+// It's best practice to define components outside of other components 
+// to prevent them from re-mounting on every render.
+const NoteForm = ({ onSubmit, handleChange, value }) => {
+  return (
+    <div>
+      <h2>Create a new note</h2>
+      <form onSubmit={onSubmit}>
+        <input
+          value={value}
+          onChange={handleChange}
+        />
+        <button type="submit">save</button>
+      </form>
+    </div>
+  )
+}
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -41,7 +59,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setLoginVisible(false) // Hide login form after successful login
+      setLoginVisible(false) 
     } catch {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
@@ -115,24 +133,24 @@ const App = () => {
     )
   }
 
-  const noteForm = () => (
-    <form onSubmit={handleSubmit}>
-      <input value={newNotes} onChange={handleNoteChange} />
-      <button type="submit">save</button>
-    </form>
-  )
-
   return (
     <div>
       <h1>Notes</h1>
-      {/* Passed errorMessage prop to Notification */}
       <Notification message={errorMessage} />
 
       {!user && loginForm()}
       {user && (
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-          {noteForm()}
+          
+          {/* Properly nested Togglable and NoteForm components */}
+          <Togglable buttonLabel="new note">
+            <NoteForm
+              onSubmit={handleSubmit}
+              value={newNotes}
+              handleChange={handleNoteChange}
+            />
+          </Togglable>
         </div>
       )}
 
