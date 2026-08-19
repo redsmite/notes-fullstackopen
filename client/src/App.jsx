@@ -5,28 +5,11 @@ import { useState, useEffect } from 'react'
 import Notification from './component/Notification.jsx'
 import Footer from './component/Footer.jsx'
 import LoginForm from './component/Login.jsx'
-import Togglable from './component/Togglable.jsx' // Added Togglable import
-
-// It's best practice to define components outside of other components 
-// to prevent them from re-mounting on every render.
-const NoteForm = ({ onSubmit, handleChange, value }) => {
-  return (
-    <div>
-      <h2>Create a new note</h2>
-      <form onSubmit={onSubmit}>
-        <input
-          value={value}
-          onChange={handleChange}
-        />
-        <button type="submit">save</button>
-      </form>
-    </div>
-  )
-}
+import Togglable from './component/Togglable.jsx'
+import NoteForm from './component/NoteForm.jsx'
 
 const App = () => {
   const [notes, setNotes] = useState([])
-  const [newNotes, setNewNotes] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('') 
@@ -74,20 +57,13 @@ const App = () => {
     noteService.setToken(null)
   }
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    const newObject = {
-      content: newNotes,
-      important: Math.random() > 0.5,
-    }
+  // This function receives the completed note object from the NoteForm component
+  const addNote = (noteObject) => {
     noteService
-      .create(newObject)
-      .then(returnedObject => setNotes(notes.concat(returnedObject)))
-    setNewNotes('')
-  }
-
-  const handleNoteChange = e => {
-    setNewNotes(e.target.value)
+      .create(noteObject)
+      .then(returnedObject => {
+        setNotes(notes.concat(returnedObject))
+      })
   }
 
   const filteredNotes = showAll 
@@ -143,13 +119,9 @@ const App = () => {
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
           
-          {/* Properly nested Togglable and NoteForm components */}
           <Togglable buttonLabel="new note">
-            <NoteForm
-              onSubmit={handleSubmit}
-              value={newNotes}
-              handleChange={handleNoteChange}
-            />
+            {/* NoteForm now only requires the createNote prop */}
+            <NoteForm createNote={addNote} />
           </Togglable>
         </div>
       )}
