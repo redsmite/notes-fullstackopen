@@ -1,7 +1,7 @@
 import noteService from './services/noteService.js'
 import loginService from './services/login.js'
 import Note from './component/Notes.jsx'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Notification from './component/Notification.jsx'
 import Footer from './component/Footer.jsx'
 import LoginForm from './component/Login.jsx'
@@ -16,6 +16,7 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
+  const noteFormRef = useRef()
 
   useEffect(() => {
     noteService
@@ -59,6 +60,7 @@ const App = () => {
 
   // This function receives the completed note object from the NoteForm component
   const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility()
     noteService
       .create(noteObject)
       .then(returnedObject => {
@@ -119,7 +121,7 @@ const App = () => {
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
           
-          <Togglable buttonLabel="new note">
+          <Togglable buttonLabel="new note" ref={noteFormRef}>
             {/* NoteForm now only requires the createNote prop */}
             <NoteForm createNote={addNote} />
           </Togglable>
